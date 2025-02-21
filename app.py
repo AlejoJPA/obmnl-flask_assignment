@@ -13,7 +13,7 @@ transactions = [
 
 # Read operation
 @app.route("/")
-def get_transactions(transactions):
+def get_transactions():
     return render_template("transactions.html", transactions=transactions)    
 
 # CRUD Operations
@@ -53,19 +53,19 @@ def edit_transaction(transaction_id):
         for transaction in transactions:
             if transaction['id'] == transaction_id:
                 transaction['date'] =  date
-                transcation['amount'] = amount
+                transaction['amount'] = amount
                 break
         #then redirect the user back to the list of transactions
         return redirect(url_for("get_transactions"))
-    #else:
+    
     # If the request method is GET, find the transaction with the matching ID and render the edit form
     for transaction in transactions:
         if transaction['id'] == transaction_id:
-            return render_template("edit.html", transactions=transactions)
+            return render_template("edit.html", transaction=transaction)
     
     #Error handler
-    # If the transaction with the specified ID is not found, handle this case (optional)
-    #return {"message": "Transaction not found"}, 404
+    # If the transaction with the specified ID is not found, handle this case
+    return {"message": "Transaction not found"}, 404
 
 #DELETE Operation
 @app.route("/delete/<int:transaction_id>")
@@ -76,14 +76,15 @@ def delete_transaction(transaction_id):
         if transaction['id'] == transaction_id:
             transactions.remove(transaction)
             break
-# Redirect to the transactions list page after deleting the new transaction
+    
+    # Redirect to the transactions list page after deleting the new transaction
     return redirect(url_for("get_transactions"))
 
 # Run the Flask app
-
+#By default, Flask launches the application on LocalHost:5000.
 if __name__ == "__main__":
     app.run(debug=True)
-    #Not used: No port definition needed
+    #By changing the port number, the port has to be explicitly stated
     #By default, Flask launches the application on LocalHost:5000.
     #app.run(host="0.0.0.0", port=8080)
 
